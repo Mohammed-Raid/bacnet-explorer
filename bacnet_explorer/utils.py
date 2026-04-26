@@ -14,10 +14,10 @@ except ImportError:
     Y = C = G = R = D = B = RS = ""
 
 
-def print_ok(msg: str)   -> None: print(f"  {G}✓{RS}  {msg}")
-def print_err(msg: str)  -> None: print(f"  {R}✗{RS}  {msg}")
-def print_info(msg: str) -> None: print(f"  {D}·{RS}  {msg}")
-def print_warn(msg: str) -> None: print(f"  {Y}!{RS}  {msg}")
+def print_ok(msg: str)   -> None: print(f"  {G}[OK]{RS}  {msg}")
+def print_err(msg: str)  -> None: print(f"  {R}[!!]{RS}  {msg}")
+def print_info(msg: str) -> None: print(f"  {D} . {RS}  {msg}")
+def print_warn(msg: str) -> None: print(f"  {Y} ! {RS}  {msg}")
 
 
 def print_table(headers: list[str], rows: list[list[str]]) -> None:
@@ -30,13 +30,13 @@ def print_table(headers: list[str], rows: list[list[str]]) -> None:
         max(len(str(h)), max((len(str(r[i])) for r in rows), default=0))
         for i, h in enumerate(headers)
     ]
-    top = "  ┌─" + "─┬─".join("─" * w for w in widths) + "─┐"
-    sep = "  ├─" + "─┼─".join("─" * w for w in widths) + "─┤"
-    bot = "  └─" + "─┴─".join("─" * w for w in widths) + "─┘"
+    top = "  +-" + "-+-".join("-" * w for w in widths) + "-+"
+    sep = "  +-" + "-+-".join("-" * w for w in widths) + "-+"
+    bot = "  +-" + "-+-".join("-" * w for w in widths) + "-+"
 
     def fmt(cells: list, color: str = "") -> str:
         parts = [f"{color}{str(c):<{widths[i]}}{RS}" for i, c in enumerate(cells)]
-        return "  │ " + " │ ".join(parts) + " │"
+        return "  | " + " | ".join(parts) + " |"
 
     print(top)
     print(fmt(headers, Y))
@@ -49,13 +49,13 @@ def print_table(headers: list[str], rows: list[list[str]]) -> None:
 def print_banner(session) -> None:
     dev_count = len(session.devices)
     active    = f"Device {session.active.device_id}" if session.active else "none"
-    line1     = f"bacnet.explorer  │  {session.local_ip}"
-    line2     = f"Devices: {dev_count:<3}      │  Active: {active}"
+    line1     = f"bacnet.explorer  |  {session.local_ip}"
+    line2     = f"Devices: {dev_count:<3}      |  Active: {active}"
     width     = max(len(line1), len(line2)) + 2
-    print(f"\n  {Y}╔{'═' * width}╗{RS}")
-    print(f"  {Y}║{RS}  {B}{line1:<{width - 2}}{RS}  {Y}║{RS}")
-    print(f"  {Y}║{RS}  {line2:<{width - 2}}  {Y}║{RS}")
-    print(f"  {Y}╚{'═' * width}╝{RS}\n")
+    print(f"\n  {Y}+{'=' * width}+{RS}")
+    print(f"  {Y}|{RS}  {B}{line1:<{width - 2}}{RS}  {Y}|{RS}")
+    print(f"  {Y}|{RS}  {line2:<{width - 2}}  {Y}|{RS}")
+    print(f"  {Y}+{'=' * width}+{RS}\n")
 
 
 def detect_local_ip() -> str:
@@ -81,7 +81,7 @@ def detect_local_ip() -> str:
 def ask(prompt: str, default: str = "") -> str:
     suffix = f" [{default}]" if default else ""
     try:
-        v = input(f"  {C}›{RS} {prompt}{suffix}: ").strip()
+        v = input(f"  {C}>{RS} {prompt}{suffix}: ").strip()
         return v if v else default
     except EOFError:
         return default

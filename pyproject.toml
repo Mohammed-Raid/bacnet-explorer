@@ -9,7 +9,9 @@ requires-python = ">=3.12"
 dependencies = ["bacpypes3", "ifaddr", "colorama"]
 
 [project.optional-dependencies]
-app = ["pywebview"]
+# pythonnet>=3.1.0rc0 is required for Python 3.14+ (adds TypeOffset314 ABI mapping).
+# pip install --pre ".[app]"
+app = ["pywebview>=6.0", "pythonnet>=3.1.0rc0"]
 
 [project.scripts]
 bacnet-explorer = "bacnet_explorer.__main__:main"

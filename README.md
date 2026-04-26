@@ -8,13 +8,13 @@ Inspired by YABE (Yet Another BACnet Explorer).
 
 ## Download
 
-Grab the latest **Windows installer** from the [Releases](../../releases) page:
+Grab the latest **Windows build** from the [Releases](../../releases) page:
 
 ```
 BACnet-Explorer-windows-x64.zip
 ```
 
-Unzip and double-click **BACnet Explorer.exe** — no Python needed.
+Unzip and double-click **`BACnet Explorer.exe`** inside the folder — no Python needed.
 
 ---
 
@@ -41,15 +41,24 @@ Unzip and double-click **BACnet Explorer.exe** — no Python needed.
 ```bash
 pip install bacpypes3 ifaddr colorama
 python -m bacnet_explorer          # interactive menu
-python -m bacnet_explorer gui      # native desktop window
-python -m bacnet_explorer gui --browser   # open in system browser instead
+python -m bacnet_explorer gui --browser   # open in system browser
 ```
 
-**With native window support (pywebview):**
+**With native desktop window (pywebview):**
+
 ```bash
+# Python 3.12 / 3.13
 pip install ".[app]"
+
+# Python 3.14+ — pythonnet 3.1+ is required (pre-release)
+pip install --pre ".[app]"
+
 python -m bacnet_explorer gui
 ```
+
+> **Note for Python 3.14+:** The Windows native window backend (pywebview) requires
+> `pythonnet >= 3.1.0rc0` because earlier versions do not have an ABI mapping for
+> Python 3.14. Use `pip install --pre ".[app]"` to get the pre-release.
 
 ---
 
@@ -79,7 +88,7 @@ local server.
 ## Build the .exe yourself
 
 ```bash
-pip install bacpypes3 ifaddr colorama pywebview pyinstaller
+pip install --pre ".[app]" pyinstaller
 pyinstaller bacnet_explorer.spec --clean -y
 # Output: dist/BACnet Explorer/BACnet Explorer.exe
 ```

@@ -211,7 +211,7 @@ async def run_interactive_menu(session: Session) -> None:
             else:
                 devs = list(session.devices.values())
                 for i, d in enumerate(devs, 1):
-                    marker = f"{G}←{RS}" if session.active and session.active.device_id == d.device_id else ""
+                    marker = f"{G}<<{RS}" if session.active and session.active.device_id == d.device_id else ""
                     print(f"  {C}{i}{RS}  Device {d.device_id}  {d.name}  {d.vendor}  @ {d.address}  {marker}")
                 idx = ask_int("Select device number", 1, 1, len(devs))
                 session.active = devs[idx - 1]
@@ -398,6 +398,15 @@ async def async_main() -> None:
 
 
 def main() -> None:
+    # Force UTF-8 on stdout/stderr so Unicode symbols (✓ ✗ · and box-drawing)
+    # don't crash on Windows consoles that default to cp1252.
+    for _stream in (sys.stdout, sys.stderr):
+        if _stream and hasattr(_stream, "reconfigure"):
+            try:
+                _stream.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
+
     # When packaged as a .exe with no arguments, open the desktop app directly.
     if getattr(sys, "frozen", False) and len(sys.argv) == 1:
         launch_app()

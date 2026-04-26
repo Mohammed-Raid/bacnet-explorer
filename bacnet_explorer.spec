@@ -72,13 +72,13 @@ exe = EXE(
     pyz,
     a.scripts,
     [],
-    exclude_binaries=True,      # directory mode (faster startup, easier to update)
+    exclude_binaries=True,
     name="BACnet Explorer",
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,              # no black console window
+    console=False,
     disable_windowed_traceback=False,
     target_arch=None,
     codesign_identity=None,

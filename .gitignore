@@ -18,6 +18,9 @@ env/
 build/
 dist/
 
+# Claude Code
+.claude/
+
 # IDE
 .vscode/
 .idea/
