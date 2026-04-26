@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bacnet-explorer"
+version = "1.0.0"
+requires-python = ">=3.12"
+dependencies = ["bacpypes3", "ifaddr", "colorama"]
+
+[project.optional-dependencies]
+app = ["pywebview"]
+
+[project.scripts]
+bacnet-explorer = "bacnet_explorer.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["bacnet_explorer*"]
+
+[tool.setuptools.package-data]
+bacnet_explorer = ["static/*"]
