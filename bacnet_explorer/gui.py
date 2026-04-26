@@ -300,6 +300,19 @@ def launch_gui(
     GUIServer(local_ip=local_ip, bacnet_port=bacnet_port, web_port=web_port).run(open_browser)
 
 
+def _acquire_single_instance_mutex() -> object | None:
+    """Return a Windows mutex handle if we are the first instance, else None."""
+    try:
+        import ctypes
+        handle = ctypes.windll.kernel32.CreateMutexW(None, True, "BACnetExplorer_SingleInstance")
+        if ctypes.windll.kernel32.GetLastError() == 183:  # ERROR_ALREADY_EXISTS
+            ctypes.windll.kernel32.CloseHandle(handle)
+            return None
+        return handle
+    except Exception:
+        return object()  # non-Windows or ctypes unavailable — allow startup
+
+
 def launch_app(
     local_ip: str = "",
     bacnet_port: int = 47808,
@@ -310,6 +323,19 @@ def launch_app(
     Uses pywebview to render the UI inside a standalone application window.
     Falls back to the system browser when pywebview is not installed.
     """
+    mutex = _acquire_single_instance_mutex()
+    if mutex is None:
+        try:
+            import webview
+            webview.create_window("BACnet Explorer — already running",
+                                  "data:text/html,<h2 style='font-family:sans-serif;padding:40px'>"
+                                  "BACnet Explorer is already running.</h2>",
+                                  width=420, height=160)
+            webview.start()
+        except Exception:
+            pass
+        return
+
     try:
         import webview  # type: ignore[import-untyped]
     except ImportError:

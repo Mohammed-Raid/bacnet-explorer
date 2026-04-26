@@ -29,6 +29,19 @@ class Session:
         self.active: DeviceInfo | None = None
 
     def start(self, local_ip: str = "", port: int = BACNET_PORT) -> None:
+        import socket as _socket
+        # Fail fast if the port is already in use (stale process, other BACnet app).
+        probe = _socket.socket(_socket.AF_INET, _socket.SOCK_DGRAM)
+        try:
+            probe.bind(("", port))
+        except OSError:
+            probe.close()
+            raise RuntimeError(
+                f"UDP port {port} is already in use.\n"
+                f"Close any other BACnet application (or a previous instance of this app) and try again."
+            )
+        probe.close()
+
         self.local_ip = local_ip or detect_local_ip()
         cidr = self.local_ip if "/" in self.local_ip else f"{self.local_ip}/24"
         addr = IPv4Address(f"{cidr}:{port}")
